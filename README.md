@@ -14,3 +14,5 @@ The repo is structured as:
 -   `paper` contains the files used to generate the paper, including the Quarto document and reference bibliography file, as well as the PDF of the paper. 
 -    `paper/datasheet` contains the datasheet of the datasets used for the analysis.
 -   `scripts` contains the R scripts used to simulate, download and clean data.
+## Statement on LLM usage
+Some aspects ofthe code, and paper subsections were written with the help of ChatGPT3.5. The entire chat history is available in inputs/llms/usage.txt.
