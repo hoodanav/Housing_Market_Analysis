@@ -20,10 +20,43 @@ bibliography: references.bib
 
 library(tidyverse)
 library(palmerpenguins)
+library(here)
+library(ggplot2)
+
+
+
+merged_data <- read.csv(here("data/analysis_data/merged_data.csv"))
+
 ```
 
 
+
 # Introduction
+
+
+The Canadian housing market has undergone significant changes in recent years, driven by various economic factors. This analysis aims to explore the dynamics of the housing market and understand the impact of economic variables on its stability.
+
+The housing market is a critical component of the economy, influencing both individual financial well-being and broader economic stability. Housing affordability, in particular, has become a pressing issue, with many Canadians finding it increasingly challenging to purchase or rent a home. Toronto’s benchmark home price has risen by 42.8 per cent since 2019. According to the Canadian Real Estate Association (CREA), the benchmark home price in Toronto five years ago was $746,500. Now, in 2024, that number is $1,065,800.[@ctvnews_home_prices].
+
+
+
+
+The Bank of Canada increased interest rates across the country 10 times between March, 2022 and July, 2023, bringing its benchmark rate to 5 per cent from 0.25 per cent in one of the most aggressive monetary policy campaigns on record. 
+
+Inflation in early 2024 seems to be settling, but 2023 it was at a high of 
+
+
+With so many factors at play, it is hard to keep track of just how the housing market is evolving. 
+
+
+
+Understanding the relationship between economic variables such as inflation, interest rates, unemployment, and housing prices is essential for policymakers, economists, and individuals alike. These variables play a significant role in shaping the housing market, impacting affordability, availability, and overall market stability.
+
+
+
+
+
+
 
 You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
 
@@ -33,41 +66,89 @@ The remainder of this paper is structured as follows. @sec-data....
 
 # Data {#sec-data}
 
+## Data Source and Collection 
+The data sets used for this analysis have been picked from multiple sources, open government portals and economic institutions. By choosing a variety of data sets, many cleaning and alignment processes were applied to ensure as much consistency possible between the data sets before usage.
+
+### Inflation Rate 
+The Inflation Rate Data was found from Macrotrends which published a concise summary of the inflation rate (Consumer Price Index focused) changes from 1960-2023 sourcing its data from the World Bank. Inflation rate, from a Consumer Price Index (CPI) perspective, represents the percentage change in the average price level of a basket of goods and services typically consumed by households over a specific period. It indicates the rate at which the general level of prices for goods and services is rising, leading to a decrease in purchasing power.
+
+### Interest Rate 
+The interest rate used for our analysis is specifically the Canada Mortgage and Housing Corporation, conventional mortgage lending rate, 5-year term rate, and was sourced from Statistics Canada. ()
+The conventional mortgage lending rate, specifically the 5-year term, refers to the interest rate that financial institutions charge for conventional mortgages with a fixed interest rate and a term of 5 years. This rate is significant in the housing market as it influences the cost of borrowing for home buyers and impacts the overall affordability of housing.
+
+
+### Unemployment Rate
+
+
+
+
+### Housing Price Index 
+
+
+
+
+
 Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
 ```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
+#| label: int-inf-plot
+#| fig-cap: Relationship between inflation rate, interest rate, and unemployment rate
 #| echo: false
+#| warning: false
+#| message: false
+# Create a line plot with 'Inflation Rate', 'Interest Rate', and 'Unemployment Rate' over the years
+ggplot(merged_data, aes(x = Year)) +
+  geom_line(aes(y = `Inflation.Rate....`, color = "Inflation Rate")) +
+  geom_line(aes(y = Interest_Rate, color = "Interest Rate")) +
+  geom_line(aes(y = `Unemployment.Rate....`, color = "Unemployment Rate")) +
+  labs(title = "Inflation Rate, Interest Rate, and Unemployment Rate Over the Years",
+       x = "Year",
+       y = "Rate") +
+  scale_color_manual(values = c("Inflation Rate" = "blue", "Interest Rate" = "red", "Unemployment Rate" = "green")) +
+  theme_minimal()
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+
 ```
+
+```{r}
+#| label: hpi-plot
+#| fig-cap: Relationship between wing length and width
+#| echo: false
+#| warning: false
+#| message: false
+# Assuming 'merged_data' is your merged dataset
+ggplot(merged_data, aes(x = Year, y = Average_House_Only)) +
+  geom_line() +
+  labs(title = "Housing Price Index Over Time",
+       x = "Year",
+       y = "Average House Price Index") +
+  theme_minimal()
+
+```
+
+
+
+
+
 
 Talk more about it.
 
 And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
 
 ```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
+#| label: immigration-plot
+#| fig-cap: Number of immigrants in Canada from 2000 to 2023
 #| echo: false
 #| warning: false
 #| message: false
+# Create a line plot for the number of immigrants in Canada over time
+ggplot(merged_data, aes(x = Year, y = `Number.of.immigrants.in.Canada.from.2000.to.2023`)) +
+  geom_line(color = "blue") +
+  labs(title = "Number of Immigrants in Canada from 2000 to 2023",
+       x = "Year",
+       y = "Number of Immigrants") +
+  theme_minimal()
 
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
 ```
 
 Talk way more about it. 
