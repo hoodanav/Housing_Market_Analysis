@@ -1,10 +1,10 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Economic Drivers, Immigration Dynamics, and Housing Starts: Their Collective Influence on Housing Price Index"
+subtitle: ""
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Navya Hooda
+ 
+thanks: "Code and data are available at: https://github.com/hoodanav/Housing_Market_Analysis/tree/main"
 date: today
 date-format: long
 abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
@@ -22,45 +22,37 @@ library(tidyverse)
 library(palmerpenguins)
 library(here)
 library(ggplot2)
-
-
+library(scales)
 
 merged_data <- read.csv(here("data/analysis_data/merged_data.csv"))
+housing_starts <- read.csv(here("data/analysis_data/total_starts_by_year.csv"))
 
 ```
-
-
 
 # Introduction
 
 
-The Canadian housing market has undergone significant changes in recent years, driven by various economic factors. This analysis aims to explore the dynamics of the housing market and understand the impact of economic variables on its stability.
+In recent years, the Canadian housing market has undergone significant changes due to various economic factors. Canadians are facing a housing crisis driven by high demand, unaffordable rates, and population growth in major cities across Canada. For example, Toronto's benchmark home price has surged by 42.8% since 2019. Back in 2019, the benchmark home price in Toronto stood at $746,500. Fast forward to 2024, and that figure has soared to $1,065,800, according to the Canadian Real Estate Association (CREA).
 
-The housing market is a critical component of the economy, influencing both individual financial well-being and broader economic stability. Housing affordability, in particular, has become a pressing issue, with many Canadians finding it increasingly challenging to purchase or rent a home. Toronto’s benchmark home price has risen by 42.8 per cent since 2019. According to the Canadian Real Estate Association (CREA), the benchmark home price in Toronto five years ago was $746,500. Now, in 2024, that number is $1,065,800.[@ctvnews_home_prices].
+One major factor contributing to these changes is the notable increase in immigration over the last decade. In 2023, Canada experienced its highest influx of immigrants and students in 70 years, leading to a 2.9% surge in the population [@reuters_canada_population]. While achieving immigration targets is a milestone for Canada, the influx of newcomers has likely exacerbated the already tight housing market.
 
+Globally, economic shifts in recent years have had far-reaching effects. Inflation has risen not only in Canada but also in many countries worldwide due to various events. Supply chain disruptions on a global scale have driven prices higher, while geopolitical tensions, such as Russia's invasion of Ukraine, have further contributed to increased energy and food costs [@forbes_interest_rates].
 
-
-
-The Bank of Canada increased interest rates across the country 10 times between March, 2022 and July, 2023, bringing its benchmark rate to 5 per cent from 0.25 per cent in one of the most aggressive monetary policy campaigns on record. 
-
-Inflation in early 2024 seems to be settling, but 2023 it was at a high of 
+In response to rising inflation, Canada saw its inflation rate peak at 6.1% in 2022, gradually easing to 3% in 2023. However, the target rate for stability is around 2% [@boc_inflation]. To curb inflation, the Bank of Canada implemented a series of interest rate hikes between March 2022 and July 2023. This aggressive monetary policy campaign saw the benchmark rate soar from 0.25% to 5%, marking one of the most substantial increases on record[@globeandmail_boc].
 
 
-With so many factors at play, it is hard to keep track of just how the housing market is evolving. 
+With so many factors at play, it is hard to keep track of just how the housing market is evolving. This analysis aims to explore the dynamics of the housing market and understand the impact of economic variables on the housing market, analyze if any indicators are more significant contributors to the housing market than others etc. Through this exploration we also aim to explore economic indicator changes and what significance they have to the housing market, the relationship between correlated variables, and their impact on the market. 
+
+This paper also explores the housing supply in specifically Ontario due to its increased housing activity in the past few years. We explore how the housing demand has changed over the last 20 years, and whether the current housing development initiatives are enough to contribute positively to the improvement of the housing crisis. Additionally, we touch upon government policy on housing capacity, and targets that are currently in motion. 
 
 
+With the complexity of the housing market influenced by numerous factors, keeping track of its evolution proves challenging. This analysis aims to understand the dynamics of the housing market, exploring the impact of economic variables and identifying significant contributors. By examining economic indicator changes, we seek to uncover their significance and understand correlations among variables and their market impact. 
 
-Understanding the relationship between economic variables such as inflation, interest rates, unemployment, and housing prices is essential for policymakers, economists, and individuals alike. These variables play a significant role in shaping the housing market, impacting affordability, availability, and overall market stability.
+Focusing particularly on Ontario's housing landscape, where activity has surged in recent years, this paper investigates shifts in housing demand over the past two decades. We evaluate whether current housing development initiatives adequately address the housing crisis. Additionally, we discuss government policies regarding housing capacity and existing targets. 
 
+Through this analysis, we aim to grasp the current reality of the housing market and understand how economic conditions, including factors like immigration and housing starts, influence its trajectory. With the housing market facing constraints such as high interest rates, we seek to uncover insights regarding the future of the market. 
 
-
-
-
-
-
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
-
-The remainder of this paper is structured as follows. @sec-data....
+The remainder of this paper is structured as follows.In the Data@sec-data, we note the sources of the data sets utilized in the paper, the specific techniques we used to process them, and key variables we wish to use. In the Model @sec-data2, we created models to assess the impact of the key variables on our outcome of housing prices. In the Results @sec-data3 we discuss  the results of the model and what key correlations were found from the variables studied in the paper. In the Discussion @sec-data4, we explore the findings of modeling and predictions. In addition, we discuss biases and weaknesses in the data that contributed to our findings, and how we navigated those limitations. 
 
 
 
@@ -70,232 +62,211 @@ The remainder of this paper is structured as follows. @sec-data....
 The data sets used for this analysis have been picked from multiple sources, open government portals and economic institutions. By choosing a variety of data sets, many cleaning and alignment processes were applied to ensure as much consistency possible between the data sets before usage.
 
 ### Inflation Rate 
-The Inflation Rate Data was found from Macrotrends which published a concise summary of the inflation rate (Consumer Price Index focused) changes from 1960-2023 sourcing its data from the World Bank. Inflation rate, from a Consumer Price Index (CPI) perspective, represents the percentage change in the average price level of a basket of goods and services typically consumed by households over a specific period. It indicates the rate at which the general level of prices for goods and services is rising, leading to a decrease in purchasing power.
+The Inflation Rate Data was found from Macrotrends [@inflation] which published a concise summary of the inflation rate (Consumer Price Index focused) changes from 1960-2023 sourcing its data from the World Bank. Inflation rate, from a Consumer Price Index (CPI) perspective, represents the percentage change in the average price level of a basket of goods and services typically consumed by households over a specific period. It indicates the rate at which the general level of prices for goods and services is rising, leading to a decrease in purchasing power.
 
 ### Interest Rate 
-The interest rate used for our analysis is specifically the Canada Mortgage and Housing Corporation, conventional mortgage lending rate, 5-year term rate, and was sourced from Statistics Canada. ()
-The conventional mortgage lending rate, specifically the 5-year term, refers to the interest rate that financial institutions charge for conventional mortgages with a fixed interest rate and a term of 5 years. This rate is significant in the housing market as it influences the cost of borrowing for home buyers and impacts the overall affordability of housing.
+The interest rate used for our analysis is specifically the Canada Mortgage and Housing Corporation, conventional mortgage lending rate, 5-year term rate, and was sourced from Statistics Canada [@interest]. The data was reported for years 2000-2024 by each month. 
+The conventional mortgage lending rate, specifically the 5-year term, refers to the interest rate that financial institutions charge for conventional mortgages with a fixed interest rate and a term of 5 years. This rate is significant in the housing market as it influences the cost of borrowing for home buyers and impacts the overall affordability of housing. For our purposes we chose to aggregate data to use an average over all months to gain a yearly interest rate number to explore. 
 
 
 ### Unemployment Rate
+The unemployment rate was found from Macrotrends [@unemployment_rate] which gave summarized year round rates, initially sourced from the World Bank. The unemployment rate generally refers to the percentage of the labor force that is unemployed and actively seeking employment. A visual of the rates discussed so far is seen in @fig-int-inf-plot.
+
+### New Housing Price Index (HPI)
+The  new housing price index data was found from Statistics Canada [@hpi], and was reported by each month for each year from 2000-2024 specifically covering Ontario. The new housing price index is a value that is a monthly series that measures changes over time in the contractors' selling prices of new residential houses given a specific start date (typically with HPI = 100, currently this refers to December 2016). The data is reported monthly on NHPI, a survey that collects the following dwelling types: new single homes, semi-detached homes and town homes (row or garden homes). The survey also collects builders' estimates of the current value (evaluated at market price) of the land. The data reports HPI for land type, house type, and total type. For our purposes we chose the house type parameter and sought to calculate a yearly HPI given the data was sorted by months. The trend can be seen in (@fig-hpi-plot)
+
+### Immigration Numbers
+The yearly immigration numbers were obtained from Statista [@immigrants], and was originally sourced from Statistics Canada. This data reports the number of immigrants Canada welcomes in each year from 2000-2023. The data was collected and sourced from a survey done by Statistics Canada. A visual of these numbers is seen in @fig-immigration-plot. 
 
 
+### Housing Starts (Ontario)
+The housing starts data was found from Statistics Canada [@housing_starts], was reported quarterly from years 2000-2024. This data refers to the number of units of housing started across Ontario of different dwelling types, in various regions. We chose to look at the housing starts of total units for all dwelling types, a yearly number by summing up each quarter's progress. For the 2024 value only quarter 1 numbers are reported hence the sharp decline for 2024 on @fig-housing-plot
 
 
-### Housing Price Index 
+## Data Cleaning 
+Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `readr` [@read], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggbeeswarm` [@gg], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
 
-
-
-
-
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
 
 ```{r}
-#| label: int-inf-plot
-#| fig-cap: Relationship between inflation rate, interest rate, and unemployment rate
+#| label: fig-int-inf-plot
 #| echo: false
 #| warning: false
+#| fig-cap: Inflation, Interest and Unemployment Rates 2000-2023
 #| message: false
 # Create a line plot with 'Inflation Rate', 'Interest Rate', and 'Unemployment Rate' over the years
 ggplot(merged_data, aes(x = Year)) +
   geom_line(aes(y = `Inflation.Rate....`, color = "Inflation Rate")) +
   geom_line(aes(y = Interest_Rate, color = "Interest Rate")) +
   geom_line(aes(y = `Unemployment.Rate....`, color = "Unemployment Rate")) +
-  labs(title = "Inflation Rate, Interest Rate, and Unemployment Rate Over the Years",
+  labs(title = ,
        x = "Year",
        y = "Rate") +
   scale_color_manual(values = c("Inflation Rate" = "blue", "Interest Rate" = "red", "Unemployment Rate" = "green")) +
-  theme_minimal()
+  theme_minimal() 
 
 
 ```
 
-```{r}
-#| label: hpi-plot
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-# Assuming 'merged_data' is your merged dataset
-ggplot(merged_data, aes(x = Year, y = Average_House_Only)) +
-  geom_line() +
-  labs(title = "Housing Price Index Over Time",
-       x = "Year",
-       y = "Average House Price Index") +
-  theme_minimal()
-
-```
 
 
 
+## Data Modifications
+Overall, the values were often reported at different times, for consistency we chose to use a yearly metric. We averaged upon quarterly or monthly reported data to gain an averaged yearly value. 
 
 
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
 
 ```{r}
-#| label: immigration-plot
+# Load the necessary packages
+#| label: fig-immigration-plot
 #| fig-cap: Number of immigrants in Canada from 2000 to 2023
 #| echo: false
 #| warning: false
 #| message: false
+# Filter out rows with missing values in the 'Number.of.immigrants.in.Canada.from.2000.to.2023' column
+merged_data_filtered <- merged_data[!is.na(merged_data$Number.of.immigrants.in.Canada.from.2000.to.2023),]
+
 # Create a line plot for the number of immigrants in Canada over time
-ggplot(merged_data, aes(x = Year, y = `Number.of.immigrants.in.Canada.from.2000.to.2023`)) +
+ggplot(merged_data_filtered, aes(x = Year, y = `Number.of.immigrants.in.Canada.from.2000.to.2023`)) +
   geom_line(color = "blue") +
-  labs(title = "Number of Immigrants in Canada from 2000 to 2023",
+  labs(title = "Number of New Immigrants in Canada from 2000-2023",
        x = "Year",
-       y = "Number of Immigrants") +
-  theme_minimal()
-
-```
-
-Talk way more about it. 
-
-
-
-# Model
-
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
-
-
-# Results
-
-Our results are summarized in @tbl-modelresults.
-
-```{r}
-#| echo: false
-#| eval: true
-#| warning: false
-#| message: false
-
-library(rstanarm)
-
-first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
-```
-
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
-#| warning: false
-
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
-```
-
-
-
-
-# Discussion
-
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
+       y = "Number of Immigrants (Thousands)") +
   theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
+  theme(plot.title = element_text(hjust = 0.5)) +  # Center the title
+  scale_y_continuous(labels = scales::comma_format(scale = 1e-3), limits = c(0, NA))  # Format y-axis labels
+
+
 ```
 
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
 
 ```{r}
+#| label: fig-hpi-plot
 #| echo: false
-#| eval: true
-#| message: false
+#| fig-cap: House Price Index 2000-2023
 #| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
+#| message: false
+# Assuming 'merged_data' is your merged dataset
+ggplot(merged_data, aes(x = Year, y = Average_House_Only)) +
+  geom_line(color = "blue") +  # Set the line color to blue
+  labs(title = "HPI",
+       x = "Year",
+       y = "Average House Price Index") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))  # Center the title
 
-plot(first_model, "trace")
 
-plot(first_model, "rhat")
 ```
 
 
 
-\newpage
 
+```{r}
+#| label: fig-housing-plot
+#| fig-cap: Housing Starts Over 2000-2023
+#| echo: false
+#| warning: false
+#| message: false
+
+# Find the maximum value in the 'starts' column of your dataframe
+max_starts <- max(housing_starts$Starts)
+
+# Round up the maximum value to the nearest thousand
+max_starts_rounded <- ceiling(max_starts / 1000) * 1000
+
+# Plot housing starts over time with adjusted y-axis scale
+plot(housing_starts$Year, housing_starts$Starts, type = "l", 
+     xlab = "Year", ylab = "Housing Starts", 
+     main = "Housing Starts Over Time",
+     ylim = c(0, max_starts_rounded),
+     yaxp = c(0, max_starts_rounded/1000, 10),  # Adjusting the number of ticks on the y-axis
+     col = "blue")  # Set the line color to blue
+
+# Customize the y-axis labels to display in numeric format with thousands separator
+axis(side = 2, at = axTicks(2), labels = format(axTicks(2), big.mark = ",", scientific = FALSE))
+
+```
+
+```{r}
+#| label: hpivs-plot
+#| fig-cap: Number of immigrants in Canada from 2000 to 2023
+#| echo: false
+#| warning: false
+#| message: false
+# Scatterplot of HPI against each economic indicator
+library(ggplot2)
+
+ggplot(data = merged_data, aes(x = Interest_Rate, y = Inflation.Rate....)) +
+  geom_point() + 
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Adding a linear trend line
+  labs(title = "Scatterplot of HPI vs Interest Rate",
+       x = "Interest Rate",
+       y = "HPI")
+
+```
+
+# Model{#sec-data2}
+
+
+```{r}
+
+```
+
+### Model set-up
+
+The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the intial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a multiple linear regression model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
+
+### Multiple Linear Regression
+We chose to explore a variety of economic and count variables like immigration and housing starts, to see how these impact the housing prices we use multiple linear regression model. 
+
+ The basic form of the regression equation is:
+ 
+The linear regression equation for predicting the House Price Index is given by:
+
+House_Price_Index = β_0 + β_1 × Inflation_Rate + β_2 × Interest_Rate + β_3 × Unemployment_Rate + β_4 × Immigration_numbers + β_5 × Housing_Starts + ε
+
+
+Where:
+\begin{itemize}
+  \item \( \text{House\_Price\_Index} \) is the response variable (dependent variable).
+  \item \( \beta_0 \) is the intercept term.
+  \item \( \beta_1, \beta_2, \beta_3, \beta_4, \beta_5 \) are the coefficients (regression coefficients) corresponding to each predictor variable.
+  \item \( \text{Inflation\_Rate}, \text{Interest\_Rate}, \text{Unemployment\_Rate}, \text{Immigration\_numbers}, \text{Housing\_Starts} \) are the predictor variables (independent variables).
+  \item \( \varepsilon \) represents the error term.
+\end{itemize}
+
+
+### Model Justifications
+The above factors were chosen as they are economic indicators of the housing market, and are often the variables that have influence in the housing market given the market conditions. For inflation and interest rates, there is a cyclic relationship, as inflation goes up, the interest rates on mortgages go up as a direct consequence. This in turn usually increases monthly housing costs, detering buyers from qualifying for loan approvals. Unemployment rates are correlated to small spending. Given Canada's housing crisis, immigration numbers and housing starts seem to be changing supply and demand, as a result these indicators can be conclusive.
+
+We expect a negative linear relationship between interest rates and housing price index, housing starts and house price index, and unemployment rate and house price index. For Immigration we expect a somewhat positive linear relationship to house price index. The increasing pace of immigration has been fueling demand and constricting the market. These relationships are estimated based upon economic patterns and past evidence. 
+
+
+## Results {#sec-data3}
+
+### Model Summary
+
+Our multiple linear regression model is summarized in [@tbl-model-sum]. Our multiple linear regression model reveals the strength and association of each indicator to the outcome variable, while holding other variables constant. The estimated coefficients in the model indicate the magnitude and direction of each variable's association. Indicators that had a positive relationship include the inflation_rate where each unit of increase in its value correlated to a 5.398 unit (estimate coefficient) increase in house_price_index. 
+
+The variables interest rate and unemployment_rate had a negative association to the house_price_index, as expected.For each unit increase of the interest rate (percent) the house price index saw a 12.45 unit decrease. The unemployment rate had estimate coefficient -2.812 indicating that as the unemployment rate changed by a unit the house price index saw a 2.812 unit decrease. However, here the relationship is not statistically significant as p > 0.05. 
+
+The housing_starts suggests a small negative effect on the house price index, but is not statistically significant. Similarly, the immigration_numbers saw a small positive effect on the house price index, but it is not statistically significant. Considering the nature of these variables, they are count values, hence a change in one unit (one housing start increase or one immigrant number increase) is not expressed significantly by this model.
+
+The model demonstrates an overall good fit with an R-squared value of 0.8522, indicating that approximately 85.229% of the variance in house price index is explained by the included predictors. The adjusted R-squared, which accounts for the number of predictors in the model, is slightly lower at 0.8088, suggesting the model is fairly robust. The residual standard error is 8.364, suggesting the amount of variability of observed responses around the fitted regression line (plot).
+
+
+# Discussion{#sec-data4}
+
+
+
+## Weaknesses and Biases 
+The data sets used for the analysis were combined and explored, these data sets may have added certain biases to our overall findings. There are a number of data sets that had missing values, and most of the data had to be modified to be compatible for use against the other indicators, we also note the  differences in their units reported. The modelling process is prone to adding bias to our findings due to model pre-assumptions, and whether the model may have overlooked trends due to its limitations. The regression model suggested immigration numbers and housing starts as not significant indicators of the house price index. However, from a economic perspective these variables should have affected the price index as they represent supply and demand variables. 
+
+Since Our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully. 
+
+
+## Future Research
+The analysis we covered only explores a handful of housing market predictors, in the future expanding the preidctors and ading a variety of variable types can help build more intuitive models for udenrstanding. To gain a new perspective on the housing market, indicatros relation t demographics, socieconmic factors, how many buyers in the market can comfortably afford mortgages and loans. This would build a foundation for a deeper analysis, and an opportunity to learn more about the housing market and whether Canada is headed in the right direction in the coming years. 
 
 # References
 

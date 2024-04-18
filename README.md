@@ -1,4 +1,5 @@
 # Housing Market
+<<<<<<< HEAD
 In this analysis, we explore how the housing market currently looks like, and how it has been impacted by the changing economic factors over the recent years. We discuss impact of inflation, interest rate hikes, and other such variables affecting the market and buyers. Based on these results we comment on government policies and initiatives to combat the housing crisis as well.
 
 
@@ -16,3 +17,5 @@ The repo is structured as:
 -   `scripts` contains the R scripts used to simulate, download and clean data.
 ## Statement on LLM usage
 Some aspects ofthe code, and paper subsections were written with the help of ChatGPT3.5. The entire chat history is available in inputs/llms/usage.txt.
+=======
+>>>>>>> 7f15eb6 (added changes to paper pdf)
