@@ -1,5 +1,5 @@
 # Housing Market
-
+In this analysis, we explore how the housing market currently looks like, and how it has been impacted by the changing economic factors over the recent years. We discuss impact of inflation, interest rate hikes, and other such variables affecting the market and buyers. Based on these results we comment on government policies and initiatives to combat the housing crisis as well.
 
 
 
