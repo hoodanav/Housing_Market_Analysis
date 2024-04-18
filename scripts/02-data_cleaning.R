@@ -9,6 +9,8 @@
 #### Workspace setup ####
 library(tidyverse)
 library(dplyr)
+install.packages("readxl")  # Install the readxl package if not already installed
+library(readxl)  # Load the readxl package
 
 #### Clean data ####
 inflation_data <- read_csv("data/raw_data/inflation-rate-cpi.csv", skip = 16)
@@ -16,6 +18,7 @@ unemployment_data <- read_csv("data/raw_data/canada-unemployment-rate.csv", skip
 interest_data <- read_excel("data/raw_data/interest_rate_2000.xlsx",skip=, col_types = "text")
 hpi_index <- read_excel("data/raw_data/HPI_20-23.xlsx",skip=, col_types = "text")
 immigration <- read_excel("data/raw_data/immigration_data.xlsx",skip=, col_types = "text")
+housing_starts <- read_excel("data/raw_data/housing_starts.xlsx",skip=, col_types = "text")
 # inflation
 # Clean data
 inflation_data_cleaned <- inflation_data %>%
@@ -154,8 +157,6 @@ immigration <- rbind(immigration, new_row)
 immigration$`Number of immigrants in Canada from 2000 to 2023` <- as.numeric(immigration$`Number of immigrants in Canada from 2000 to 2023`)
 
 # Calculate percent change
-immigration$`Percent Change` <- c(NA, diff(as.numeric(immigration$`Number of immigrants in Canada from 2000 to 2023`)) / lag(as.numeric(immigration$`Number of immigrants in Canada from 2000 to 2023`)) * 100)
-
 # Print the modified dataframe
 print(tail(immigration))
 
@@ -174,33 +175,84 @@ print(immigration)
 
 
 
-# Merge the cleaned datasets by the "year" property
-merged_data <- merge(inflation_data_cleaned, unemployment_cleaned, by = "year", all = TRUE)
+# cleaning housing starts 
+print(housing_starts)
 
+
+# Find the row indices where "housing starts" and "housing estimates" are located in the first column
+housing_starts_row <- which(housing_starts[, 1] == "Housing starts")
+housing_estimates_row <- which(housing_starts[, 1] == "Housing estimates")
+
+# Extract the rows based on the found indices
+housing_starts_data <- housing_starts[housing_starts_row, ]
+housing_estimates_data <- housing_starts[housing_estimates_row, ]
+
+# Combine the two dataframes
+combined_data <- rbind(housing_starts_data, housing_estimates_data)
+print(combined_data)
+# Optionally, you can remove the rows containing 'NA'
+combined_data <- na.omit(combined_data)
+
+# Transpose row 13 into two columns: "year" and "starts"
+transposed_data <- t(combined_data)
+transposed_data_df <- as.data.frame(transposed_data)
+transposed_data_df <- transposed_data_df[-c(1:2), ]
+colnames(transposed_data_df) <- c("Starts", "Year")
+print(transposed_data_df)
+# Assuming you have already performed the previous operations and have `transposed_data_df` dataframe
+
+# Convert the "year"  and 'starts' column to numeric
+# Extract the year from the "year" column (last four characters)
+transposed_data_df$Year <- substr(transposed_data_df$Year, nchar(transposed_data_df$Year) - 3, nchar(transposed_data_df$Year))
+
+print(str(transposed_data_df$Year))
+print(head(transposed_data_df$Year))
+
+
+transposed_data_df$Year <- as.numeric(transposed_data_df$Year)
+transposed_data_df$Starts <- as.numeric(transposed_data_df$Starts)
+
+# Group by year and calculate the total for "starts"
+total_starts <- aggregate(Starts ~ Year, data = transposed_data_df, FUN = sum, na.rm = TRUE)
+# Print the first few rows of the averaged dataframe
+print(head(total_starts))
+
+
+# Group by year and calculate the average for "starts"
+print(head(total_starts))
+# Write the dataframe to a CSV file
+write.csv(total_starts, "data/analysis_data/total_starts_by_year.csv", row.names = FALSE)
+
+
+
+# clean merge set
+
+names(inflation_data_cleaned)[names(inflation_data_cleaned) == "year"] <- "Year"
+names(unemployment_cleaned)[names(unemployment_cleaned) == "year"] <- "Year"
+
+# Merge the cleaned datasets by the "year" property
 # Convert 'Year' to character in all datasets
-inflation_data_cleaned$year <- as.character(inflation_data_cleaned$year)
-unemployment_cleaned$year <- as.character(unemployment_cleaned$year)
+inflation_data_cleaned$Year <- as.character(inflation_data_cleaned$Year)
+unemployment_cleaned$Year <- as.character(unemployment_cleaned$Year)
 interest_averages$Year <- as.character(interest_averages$Year)
 house_only_averages$Year <- as.character(house_only_averages$Year)
 immigration$Year <- as.character(immigration$Year)
-
-# Now, you can perform the joins
-merged_data <- left_join(inflation_data_cleaned, unemployment_cleaned, by = "year")
-merged_data <- left_join(merged_data, interest_averages, by = "Year")
-merged_data <- left_join(merged_data, house_only_averages, by = "Year")
-merged_data <- left_join(merged_data, immigration, by = "Year")
+total_starts$Year <- as.character(total_starts$Year)
 
 
+# Check structure and content of the "Year" column in merged_data
+str(merged_data$year)
+head(merged_data$year)
 
+# Check structure and content of the "Year" column in interest_averages
+str(interest_averages$Year)
+head(interest_averages$Year)
 
-# Rename the 'year' column in inflation_data_cleaned and unemployment_cleaned
-names(inflation_data_cleaned)[names(inflation_data_cleaned) == "year"] <- "Year"
-names(unemployment_cleaned)[names(unemployment_cleaned) == "year"] <- "Year"
 
 # Merge the datasets
 merged_data <- Reduce(
   function(x, y) merge(x, y, by = "Year", all = TRUE),
-  list(inflation_data_cleaned, unemployment_cleaned, interest_averages, house_only_averages, immigration)
+  list(inflation_data_cleaned, unemployment_cleaned, interest_averages, house_only_averages, immigration, total_starts)
 )
 
 
@@ -215,7 +267,8 @@ merged_data <- Reduce(
     interest_averages,
     unemployment_cleaned,
     inflation_data_cleaned, 
-    immigration
+    immigration, 
+    total_starts
     # Add other datasets as needed
   )
 )
@@ -255,11 +308,4 @@ write.csv(merged_data, "data/analysis_data/merged_data.csv", row.names = FALSE)
 # Print the merged data
 print(merged_data)
 
-# Write merged data to a CSV file
-write.csv(merged_data, "merged_data.csv", row.names = FALSE)
-
-
-
-# Save the merged data to a CSV file
-write.csv(merged_data, "data/final_merged_data.csv", row.names = FALSE)
 

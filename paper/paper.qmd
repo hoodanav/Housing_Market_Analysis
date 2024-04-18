@@ -11,6 +11,7 @@ abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
 format: pdf
 number-sections: true
 bibliography: references.bib
+toc: true
 ---
 
 ```{r}
@@ -23,6 +24,9 @@ library(palmerpenguins)
 library(here)
 library(ggplot2)
 library(scales)
+library(dplyr)
+library(knitr)
+library(kableExtra)
 
 merged_data <- read.csv(here("data/analysis_data/merged_data.csv"))
 housing_starts <- read.csv(here("data/analysis_data/total_starts_by_year.csv"))
@@ -46,7 +50,7 @@ With so many factors at play, it is hard to keep track of just how the housing m
 This paper also explores the housing supply in specifically Ontario due to its increased housing activity in the past few years. We explore how the housing demand has changed over the last 20 years, and whether the current housing development initiatives are enough to contribute positively to the improvement of the housing crisis. Additionally, we touch upon government policy on housing capacity, and targets that are currently in motion. 
 
 
-With the complexity of the housing market influenced by numerous factors, keeping track of its evolution proves challenging. This analysis aims to understand the dynamics of the housing market, exploring the impact of economic variables and identifying significant contributors. By examining economic indicator changes, we seek to uncover their significance and understand correlations among variables and their market impact. 
+With the complexity of the housing market influenced by numerous factors, keeping track of its evolution proves challenging. The estimand of this paper is to find the associations the of economic variables, the supply demand variables represented by housing starts and immigration numbers to the house price index. By examining economic indicator changes, we seek to uncover their significance and understand correlations among variables and their market impact. 
 
 Focusing particularly on Ontario's housing landscape, where activity has surged in recent years, this paper investigates shifts in housing demand over the past two decades. We evaluate whether current housing development initiatives adequately address the housing crisis. Additionally, we discuss government policies regarding housing capacity and existing targets. 
 
@@ -76,15 +80,29 @@ The unemployment rate was found from Macrotrends [@unemployment_rate] which gave
 The  new housing price index data was found from Statistics Canada [@hpi], and was reported by each month for each year from 2000-2024 specifically covering Ontario. The new housing price index is a value that is a monthly series that measures changes over time in the contractors' selling prices of new residential houses given a specific start date (typically with HPI = 100, currently this refers to December 2016). The data is reported monthly on NHPI, a survey that collects the following dwelling types: new single homes, semi-detached homes and town homes (row or garden homes). The survey also collects builders' estimates of the current value (evaluated at market price) of the land. The data reports HPI for land type, house type, and total type. For our purposes we chose the house type parameter and sought to calculate a yearly HPI given the data was sorted by months. The trend can be seen in (@fig-hpi-plot)
 
 ### Immigration Numbers
-The yearly immigration numbers were obtained from Statista [@immigrants], and was originally sourced from Statistics Canada. This data reports the number of immigrants Canada welcomes in each year from 2000-2023. The data was collected and sourced from a survey done by Statistics Canada. A visual of these numbers is seen in @fig-immigration-plot. 
+The yearly immigration numbers were obtained from Statista [@immigrants], and was originally sourced from Statistics Canada. This data reports the number of immigrants Canada welcomes in each year from 2000-2023 in thousands. The data was collected and sourced from a survey done by Statistics Canada. A visual of these numbers is seen in @fig-immigration-plot. 
 
 
 ### Housing Starts (Ontario)
 The housing starts data was found from Statistics Canada [@housing_starts], was reported quarterly from years 2000-2024. This data refers to the number of units of housing started across Ontario of different dwelling types, in various regions. We chose to look at the housing starts of total units for all dwelling types, a yearly number by summing up each quarter's progress. For the 2024 value only quarter 1 numbers are reported hence the sharp decline for 2024 on @fig-housing-plot
 
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(knitr)
+library(kableExtra)
 
+# Display the first 6 rows of the merged data as a table using kable with proper styling
+kable(head(merged_data, 6), format = "latex", caption = "Merged Data Table") %>%
+  kable_styling(latex_options = "scale_down") %>%
+  as.character() %>%
+  cat("\n\\centering")  # Add LaTeX centering command
+
+```
 ## Data Cleaning 
-Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `readr` [@read], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggbeeswarm` [@gg], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
+Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `readr` [@read], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
+
+
 
 
 ```{r}
@@ -111,7 +129,7 @@ ggplot(merged_data, aes(x = Year)) +
 
 
 ## Data Modifications
-Overall, the values were often reported at different times, for consistency we chose to use a yearly metric. We averaged upon quarterly or monthly reported data to gain an averaged yearly value. 
+Overall, the values were often reported at different times, for consistency we chose to use a yearly metric. We averaged upon quarterly or monthly reported data to gain an averaged yearly value. We then created a merged datadframe joined by the year variable and achieved our cleaned data as seen in @tbl-clean-data.
 
 
 
@@ -188,7 +206,7 @@ axis(side = 2, at = axTicks(2), labels = format(axTicks(2), big.mark = ",", scie
 ```
 
 ```{r}
-#| label: hpivs-plot
+#| label: fig-hpivs-plot
 #| fig-cap: Number of immigrants in Canada from 2000 to 2023
 #| echo: false
 #| warning: false
@@ -223,7 +241,7 @@ We chose to explore a variety of economic and count variables like immigration a
  
 The linear regression equation for predicting the House Price Index is given by:
 
-House_Price_Index = β_0 + β_1 × Inflation_Rate + β_2 × Interest_Rate + β_3 × Unemployment_Rate + β_4 × Immigration_numbers + β_5 × Housing_Starts + ε
+\[ \text{House\_Price\_Index} = \beta_0 + \beta_1 \times \text{Inflation\_Rate} + \beta_2 \times \text{Interest\_Rate} + \beta_3 \times \text{Unemployment\_Rate} + \beta_4 \times \text{Immigration\_numbers} + \beta_5 \times \text{Housing\_Starts} + \epsilon \]
 
 
 Where:
@@ -242,7 +260,7 @@ The above factors were chosen as they are economic indicators of the housing mar
 We expect a negative linear relationship between interest rates and housing price index, housing starts and house price index, and unemployment rate and house price index. For Immigration we expect a somewhat positive linear relationship to house price index. The increasing pace of immigration has been fueling demand and constricting the market. These relationships are estimated based upon economic patterns and past evidence. 
 
 
-## Results {#sec-data3}
+# Results {#sec-data3}
 
 ### Model Summary
 
@@ -257,12 +275,13 @@ The model demonstrates an overall good fit with an R-squared value of 0.8522, in
 
 # Discussion{#sec-data4}
 
-
+## Interest Rates and HPI
+The model suggests interest rate as a significant predictor of HPI
 
 ## Weaknesses and Biases 
 The data sets used for the analysis were combined and explored, these data sets may have added certain biases to our overall findings. There are a number of data sets that had missing values, and most of the data had to be modified to be compatible for use against the other indicators, we also note the  differences in their units reported. The modelling process is prone to adding bias to our findings due to model pre-assumptions, and whether the model may have overlooked trends due to its limitations. The regression model suggested immigration numbers and housing starts as not significant indicators of the house price index. However, from a economic perspective these variables should have affected the price index as they represent supply and demand variables. 
 
-Since Our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully. 
+Since our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully. 
 
 
 ## Future Research

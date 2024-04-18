@@ -1,12 +1,9 @@
 #### Preamble ####
-# Purpose: Models... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Model data for meaningful analysis
+# Author: Navya Hooda
+# Date: April 9, 2023
+# Contact: navya.hooda@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
 
 #### Workspace setup ####
 library(tidyverse)
