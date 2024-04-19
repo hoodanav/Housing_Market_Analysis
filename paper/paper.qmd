@@ -256,10 +256,6 @@ axis(side = 2, at = axTicks(2), labels = format(axTicks(2), big.mark = ",", scie
 # Model{#sec-data2}
 
 
-```{r}
-
-```
-
 ### Model set-up
 
 The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the initial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a Bayesian generalized linear model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
