@@ -106,7 +106,7 @@ head(merged_data, 6) |>
 
 ```
 ## Data Cleaning 
-Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `readr` [@read], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
+Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
 
 ```{r}
 #| label: tbl-model-sum
@@ -264,14 +264,14 @@ axis(side = 2, at = axTicks(2), labels = format(axTicks(2), big.mark = ",", scie
 
 ### Model set-up
 
-The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the initial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a bayesian generalized linear model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
+The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the initial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a Bayesian generalized linear model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
 
-###  Bayesian linear regression
+###  Bayesian Linear Regression 
 We chose to explore a variety of economic and count variables like immigration and housing starts, to see how these impact the housing prices we use a Bayesian GLM.  
 
  The basic form of the regression equation is:
  
-The linear regression equation for predicting the House Price Index is given by:
+The model equation for predicting the House Price Index is given by:
 
 $$
 \begin{aligned}
@@ -302,7 +302,7 @@ We expect a negative linear relationship between interest rates and housing pric
 
 ### Model Summary
 
-Our multiple linear regression model is summarized in [@tbl-model]. Our multiple linear regression model reveals the strength and association of each indicator to the outcome variable, while holding other variables constant. The estimated coefficients in the model indicate the magnitude and direction of each variable's association. Indicators that had a positive relationship include the inflation_rate where each unit of increase in its value correlated to a 3.046 unit (estimate coefficient) increase in house_price_index. 
+Our Bayesian linear regression model is summarized in [@tbl-model]. Our model reveals the strength and association of each indicator to the outcome variable, while holding other variables constant. The estimated coefficients in the model indicate the magnitude and direction of each variable's association. Indicators that had a positive relationship include the inflation_rate where each unit of increase in its value correlated to a 3.046 unit (estimate coefficient) increase in house_price_index. 
 
 The variables interest rate and unemployment_rate had a negative association to the house_price_index, as expected.For each unit increase of the interest rate (percent) the house price index saw a 11.579 unit decrease. The unemployment rate had estimate coefficient -2.320 indicating that as the unemployment rate changed by a unit the house price index saw a 2.320 unit decrease. However, here the relationship is not statistically significant. 
 

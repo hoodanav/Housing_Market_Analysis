@@ -9,6 +9,8 @@
 library(tidyverse)
 library(rstanarm)
 library(modelsummary)
+
+
 #### Read data ####
 merged_data <- read_csv("data/analysis_data/merged_data.csv")
 housing_starts <- read_csv("data/analysis_data/total_starts_by_year.csv")

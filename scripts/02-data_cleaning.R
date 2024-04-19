@@ -303,7 +303,7 @@ print(duplicated_rows)
 
 # Save the merged data to a CSV file
 write.csv(merged_data, "data/analysis_data/merged_data.csv", row.names = FALSE)
-write_parquet(merged_data, "data/analysis_data/merged.parquet")
+write_parquet(merged_data, "data/analysis_data/merged_data.parquet")
 
 # Print the merged data
 print(merged_data)
