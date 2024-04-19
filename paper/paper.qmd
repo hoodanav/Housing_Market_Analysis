@@ -53,8 +53,6 @@ With so many factors at play, it is hard to keep track of just how the housing m
 This paper also explores the housing supply in specifically Ontario due to its increased housing activity in the past few years. We explore how the housing demand has changed over the last 20 years, and whether the current housing development initiatives are enough to contribute positively to the improvement of the housing crisis. Additionally, we touch upon government policy on housing capacity, and targets that are currently in motion. 
 
 
-With the complexity of the housing market influenced by numerous factors, keeping track of its evolution proves challenging. The estimand of this paper is to find the associations the of economic variables, the supply demand variables represented by housing starts and immigration numbers to the house price index. By examining economic indicator changes, we seek to uncover their significance and understand correlations among variables and their market impact. 
-
 Focusing particularly on Ontario's housing market, where activity has surged in recent years, this paper investigates shifts in housing demand over the past two decades. We evaluate whether current housing development initiatives adequately address the housing crisis. Additionally, we discuss government policies regarding housing capacity and existing targets.  
 
 Through this analysis, we aim to grasp the current reality of the housing market and understand how economic conditions, including factors like immigration and housing starts, influence its trajectory. With the housing market facing constraints such as high interest rates, we found that they did have a significant correlation to changes in house price index, whereas certain factors did not have much association to house price index at all.  
@@ -316,17 +314,38 @@ The model demonstrates an overall good fit with an R-squared value of 0.842, ind
 ## Interest Rates and HPI
 The model suggests interest rate as a significant predictor of HPI, or one that has the most fluctuation in a one unit change to our response variable of house price index. This trend was expected and is justified considering economic tendencies. The interest rates in our study recently saw a consistent hike over the last few years. This interest rate is the measure of the mortgage lending rate, a variable directly correlated to housing affordability and prices. As these have gone up, this negative relationship towards the house price index is justified. In terms of the housing market, interest rates show to be beneficial for generally decreasing house price index, and likely other market predictors not evaluated in this study. 
 
+## Housing Starts, Immigration Numbers and HPI
+The housing starts variable did not show any significant correlation to house price index, as it was not statistically significant. However, housing starts are representative of the supply in the housing market hence it should have shown some correlation to the pricing index. It's possible our model did not capture the correlation, but a reason for this could be that the number of housing starts has no effect on pricing because we add just the correct amount to keep prices balanced. However, considering Canadian regions are in a housing crisis, this is highly unlikely. 
 
-## Weaknesses and Biases 
+If we consider the immigration as the demand factor, compared against that our housing price index we expected some effect on the pricing. As the demand or immigrants increase, the housing prices should have had some proportionally increase. Especially, since Canada has increased immigration by 20.3% during 2022-2023 and will continue to increase each year [@reuters_canada_population]. Given that, the numbers suggest the demand has been growing rapidly, it is likely the model was not able to capture immigration as a significant factor to the housing market due to model limitations.  
+
+
+## Biases and Limitations
 The data sets used for the analysis were combined and explored, these data sets may have added certain biases to our overall findings. There are a number of data sets that had missing values, and most of the data had to be modified to be compatible for use against the other indicators, we also note the  differences in their units reported. The modelling process is prone to adding bias to our findings due to model pre-assumptions, and whether the model may have overlooked trends due to its limitations. The regression model suggested immigration numbers and housing starts as not significant indicators of the house price index. However, from a economic perspective these variables should have affected the price index as they represent supply and demand variables. 
 
-Since our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully. 
 
-The 
+Since our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully.
 
+
+Additionally, our choice of housing market indicator can be a concern when generalizing our trends to the overall Canadian housing market. We chose to assign the house price index, specifically representing the house price index of new homes as our market indicator, this predictor does not account for pricing index of older homes. The market inOntario is at a pace where buyers are equally interested in older homes as opposed to new homes due to the limited supply of housing that has arisen in the past years. By only analyzing the new house price index, we may have introduced some limitations as to how representative our model's results are of the housing market as a whole. 
+ 
 
 ## Future Research
-The analysis we covered only explores a handful of housing market predictors, in the future expanding the preidctors and ading a variety of variable types can help build more intuitive models for udenrstanding. To gain a new perspective on the housing market, indicatros relation t demographics, socieconmic factors, how many buyers in the market can comfortably afford mortgages and loans. This would build a foundation for a deeper analysis, and an opportunity to learn more about the housing market and whether Canada is headed in the right direction in the coming years. 
+
+To gain a deeper understanding of the Canadian housing market, it would be helpful to analyze various metropolitan and growing regions across the country. By including additional economic factors such as GDP and average wages, we can better understand how these variables influence multiple outcomes, including average house prices.
+
+The analysis we've done so far only covers a few predictors, so it would be beneficial to expand our scope. Including indicators related to demographics, socioeconomic factors, and the affordability of mortgages can provide more insights. For example, exploring housing market characteristics, prices based on dwelling types, and the demographics of recent buyers can offer a more comprehensive view.
+
+By analyzing these factors together, we can build a stronger foundation for understanding the housing market and gaining insights into Canada's future direction.
+
+
+
+
+
+
+
+\newpage
+
 
 # References
 
