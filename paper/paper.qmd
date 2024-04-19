@@ -75,7 +75,7 @@ The conventional mortgage lending rate, specifically the 5-year term, refers to 
 
 
 ### Unemployment Rate
-The unemployment rate was found from Macrotrends [@unemployment_rate] which gave summarized year round rates, initially sourced from the World Bank. The unemployment rate generally refers to the percentage of the labor force that is unemployed and actively seeking employment. A visual of the rates discussed so far is seen in @fig-int-inf-plot.
+The unemployment rate was found from Macrotrends [@unemployment_rate] which gave summarized year round rates, initially sourced from the World Bank. The unemployment rate generally refers to the percentage of the labor force that is unemployed and actively seeking employment.
 
 ### New Housing Price Index (HPI)
 The  new housing price index data was found from Statistics Canada [@hpi], and was reported by each month for each year from 2000-2024 specifically covering Ontario. The new housing price index is a value that is a monthly series that measures changes over time in the contractors' selling prices of new residential houses given a specific start date (typically with HPI = 100, currently this refers to December 2016). The data is reported monthly on NHPI, a survey that collects the following dwelling types: new single homes, semi-detached homes and town homes (row or garden homes). The survey also collects builders' estimates of the current value (evaluated at market price) of the land. The data reports HPI for land type, house type, and total type. For our purposes we chose the house type parameter and sought to calculate a yearly HPI given the data was sorted by months. The trend can be seen in (@fig-hpi-plot)
