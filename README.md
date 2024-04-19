@@ -1,6 +1,6 @@
 # Housing Market Overview
 
-In this analysis, we explore how the housing market currently looks like, and how it has been impacted by the changing economic factors over the recent years. We discuss impact of inflation, interest rate hikes, and other such variables affecting the market and buyers. Based on these results we analyze if the trends are in line with economic behaviour.
+In this analysis, we explore the current state of the housing market, and how it has been impacted by the changing economic factors over the recent years. We discuss the impact of inflation, interest rate hikes, and other such variables affecting the market and buyers. Based on these results we analyze if the trends are in line with economic behaviour.
 
 
 ## File Structure
