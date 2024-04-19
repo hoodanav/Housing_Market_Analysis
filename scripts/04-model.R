@@ -27,20 +27,17 @@ print(colnames(model_data))
 # Assuming 'merged_data' is your merged dataset containing the housing starts data
 
 # Fit a linear regression model with housing starts as an additional predictor
-pricing_model <- lm(House_Price_Index ~ Inflation_Rate + Interest_Rate + Unemployment_Rate + Immigration_numbers + Housing_Starts, data = model_data)
+pricing_model <- stan_glm(House_Price_Index ~ Inflation_Rate + Interest_Rate + Unemployment_Rate + Immigration_numbers + Housing_Starts, data = model_data)
 
 # Summary of the model
 summary(pricing_model)
+modelsummary(pricing_model)
+
 
 
 #### Save model ####
 saveRDS(
   pricing_model,
   file = "models/pricing_model.rds"
-)
-
-saveRDS(
-  lm_model,                  # Your linear regression model object
-  file = "models/lm_model.rds"  # File path where you want to save the model
 )
 

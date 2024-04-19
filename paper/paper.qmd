@@ -7,8 +7,11 @@ author:
 thanks: "Code and data are available at: https://github.com/hoodanav/Housing_Market_Analysis/tree/main"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
-format: pdf
+abstract: "This paper examines Ontario's housing market over 20 years, focusing on economic variables, housing starts, and immigration's impact on house prices. We evaluate the current housing development initiatives in addressing the housing crisis, along with immigration targets as supply and demand variables. The market's current state indicates an already constricted inventory that is largely influenced by interest rate hikes over the last few years."
+header-includes:
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+format: pdf 
 number-sections: true
 bibliography: references.bib
 toc: true
@@ -52,13 +55,11 @@ This paper also explores the housing supply in specifically Ontario due to its i
 
 With the complexity of the housing market influenced by numerous factors, keeping track of its evolution proves challenging. The estimand of this paper is to find the associations the of economic variables, the supply demand variables represented by housing starts and immigration numbers to the house price index. By examining economic indicator changes, we seek to uncover their significance and understand correlations among variables and their market impact. 
 
-Focusing particularly on Ontario's housing landscape, where activity has surged in recent years, this paper investigates shifts in housing demand over the past two decades. We evaluate whether current housing development initiatives adequately address the housing crisis. Additionally, we discuss government policies regarding housing capacity and existing targets. 
+Focusing particularly on Ontario's housing market, where activity has surged in recent years, this paper investigates shifts in housing demand over the past two decades. We evaluate whether current housing development initiatives adequately address the housing crisis. Additionally, we discuss government policies regarding housing capacity and existing targets.  
 
-Through this analysis, we aim to grasp the current reality of the housing market and understand how economic conditions, including factors like immigration and housing starts, influence its trajectory. With the housing market facing constraints such as high interest rates, we seek to uncover insights regarding the future of the market. 
+Through this analysis, we aim to grasp the current reality of the housing market and understand how economic conditions, including factors like immigration and housing starts, influence its trajectory. With the housing market facing constraints such as high interest rates, we found that they did have a significant correlation to changes in house price index, whereas certain factors did not have much association to house price index at all.  
 
-The remainder of this paper is structured as follows.In the Data@sec-data, we note the sources of the data sets utilized in the paper, the specific techniques we used to process them, and key variables we wish to use. In the Model @sec-data2, we created models to assess the impact of the key variables on our outcome of housing prices. In the Results @sec-data3 we discuss  the results of the model and what key correlations were found from the variables studied in the paper. In the Discussion @sec-data4, we explore the findings of modeling and predictions. In addition, we discuss biases and weaknesses in the data that contributed to our findings, and how we navigated those limitations. 
-
-
+The remainder of this paper is structured as follows.In the Data @sec-data, we note the sources of the data sets utilized in the paper, the specific techniques we used to process them, and key variables we wish to use. In the Model @sec-data2, we created models to assess the impact of the key variables on our outcome of housing prices. In the Results @sec-data3 we discuss  the results of the model and what key correlations were found from the variables studied in the paper. In the Discussion @sec-data4, we explore the findings of modeling and predictions. In addition, we discuss biases and weaknesses in the data that contributed to our findings, and how we navigated those limitations. 
 
 # Data {#sec-data}
 
@@ -86,24 +87,95 @@ The yearly immigration numbers were obtained from Statista [@immigrants], and wa
 ### Housing Starts (Ontario)
 The housing starts data was found from Statistics Canada [@housing_starts], was reported quarterly from years 2000-2024. This data refers to the number of units of housing started across Ontario of different dwelling types, in various regions. We chose to look at the housing starts of total units for all dwelling types, a yearly number by summing up each quarter's progress. For the 2024 value only quarter 1 numbers are reported hence the sharp decline for 2024 on @fig-housing-plot
 
-```{r}
-# Load necessary libraries
-library(dplyr)
-library(knitr)
+```{r} 
+#| label: tbl-cleaned-data
+#| message: false
+#| echo: false
+#| warning: false
+#| tbl-cap: "Clean and merged data"
 library(kableExtra)
 
-# Display the first 6 rows of the merged data as a table using kable with proper styling
-kable(head(merged_data, 6), format = "latex", caption = "Merged Data Table") %>%
-  kable_styling(latex_options = "scale_down") %>%
-  as.character() %>%
-  cat("\n\\centering")  # Add LaTeX centering command
+options(kableExtra.latex.max.width=1)
+head(merged_data, 6) |>
+  kable(
+        col.names = c("Year","Average_House_Only","Interest_Rate","Unemployment Rate (%)","Annual Change.x","Inflation Rate (%)","Annual Change.y","Number of immigrants in Canada from 2000 to 2023","Starts"),
+    booktabs = TRUE,
+    longtable = FALSE
+  ) %>%
+  kable_styling(latex_options = c("striped", "scale_down"), font_size = 3)
 
 ```
 ## Data Cleaning 
 Simple data cleaning operations were applied to achieve a cohesive merged data set for analysis. We used R [@citeR] for data cleaning and processing, using packages like tidyverse [@tidy] for data manipulation and janitor [@jan] for cleaning column names. Other packages used includes `ggplot2` [@ggplot], `dplyr` [@dp], `readr` [@read], `tibble` [@tib], `janitor` [@jan], `knitr` [@knit], `ggrepel` [@repel], `kableExtra`[@kable], `readxl`[@readxl], `rstanarm`[@rstan], `modelsummary`[@model] and `here` [@here]. All these different data sets were cleaned in a different way to match the final representation of the cleaned data.
 
+```{r}
+#| label: tbl-model-sum
+#| fig-cap: "Model Summary"
+#| echo: false
+#| warning: false
+#| message: false
+
+# Load necessary libraries
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(here)
+
+# Load the model file
+pricing_model <-
+  readRDS(file = here::here("models/pricing_model.rds"))
 
 
+# # Now you can access model_data
+# # For example, if model_data is a data frame in the model file
+# 
+# 
+# # Create a function to format the coefficients table
+# format_coefficients_table <- function(model_summary) {
+#   # Extract coefficients, standard errors, t-values, and p-values
+#   coefficients <- coef(model_summary)
+#   std_errors <- summary(model_summary)$coefficients[, "Std. Error"]
+#   t_values <- summary(model_summary)$coefficients[, "t value"]
+#   p_values <- summary(model_summary)$coefficients[, "Pr(>|t|)"]
+#   
+#   # Create a data frame
+#   coefficients_table <- data.frame(
+#     Coefficient = coefficients,
+#     `Std. Error` = std_errors,
+#     `t value` = t_values,
+#     `Pr(>|t|)` = p_values
+#   )
+#   
+#   return(coefficients_table)
+# }
+# 
+# # Call the function with your model summary
+# model_summary <- lm(House_Price_Index ~ Inflation_Rate + Interest_Rate + 
+#                       Unemployment_Rate + Immigration_numbers + Housing_Starts, 
+#                     data = model_data)
+# coefficients_table <- format_coefficients_table(model_summary)
+# 
+# # Print the coefficients table using kable and add formatting
+# kable(coefficients_table, format = "markdown", align = "c") %>%
+#   kable_styling(latex_options = c("striped", "scale_down")) %>%
+#   add_header_above(c(" " = 1, "Coefficients" = 4))
+
+```
+
+```{r}
+#| label: tbl-model
+#| tbl-cap: Model Summary Results 
+#| echo: false
+#| warning: false
+#| message: false
+modelsummary::modelsummary(
+  list(
+    "Price model" = pricing_model
+  ),
+  fmt = 2
+)
+
+```
 
 ```{r}
 #| label: fig-int-inf-plot
@@ -129,33 +201,10 @@ ggplot(merged_data, aes(x = Year)) +
 
 
 ## Data Modifications
-Overall, the values were often reported at different times, for consistency we chose to use a yearly metric. We averaged upon quarterly or monthly reported data to gain an averaged yearly value. We then created a merged datadframe joined by the year variable and achieved our cleaned data as seen in @tbl-clean-data.
+Overall, the values were often reported at different times, for consistency we chose to use a yearly metric. We averaged upon quarterly or monthly reported data to gain an averaged yearly value. We then created a merged datadframe joined by the year variable and achieved our cleaned data as seen in @tbl-cleaned-data.
 
 
 
-
-```{r}
-# Load the necessary packages
-#| label: fig-immigration-plot
-#| fig-cap: Number of immigrants in Canada from 2000 to 2023
-#| echo: false
-#| warning: false
-#| message: false
-# Filter out rows with missing values in the 'Number.of.immigrants.in.Canada.from.2000.to.2023' column
-merged_data_filtered <- merged_data[!is.na(merged_data$Number.of.immigrants.in.Canada.from.2000.to.2023),]
-
-# Create a line plot for the number of immigrants in Canada over time
-ggplot(merged_data_filtered, aes(x = Year, y = `Number.of.immigrants.in.Canada.from.2000.to.2023`)) +
-  geom_line(color = "blue") +
-  labs(title = "Number of New Immigrants in Canada from 2000-2023",
-       x = "Year",
-       y = "Number of Immigrants (Thousands)") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5)) +  # Center the title
-  scale_y_continuous(labels = scales::comma_format(scale = 1e-3), limits = c(0, NA))  # Format y-axis labels
-
-
-```
 
 
 ```{r}
@@ -181,7 +230,7 @@ ggplot(merged_data, aes(x = Year, y = Average_House_Only)) +
 
 ```{r}
 #| label: fig-housing-plot
-#| fig-cap: Housing Starts Over 2000-2023
+#| fig-cap: Housing Starts Over 2000-2023 in Ontario
 #| echo: false
 #| warning: false
 #| message: false
@@ -195,7 +244,7 @@ max_starts_rounded <- ceiling(max_starts / 1000) * 1000
 # Plot housing starts over time with adjusted y-axis scale
 plot(housing_starts$Year, housing_starts$Starts, type = "l", 
      xlab = "Year", ylab = "Housing Starts", 
-     main = "Housing Starts Over Time",
+     main = "",
      ylim = c(0, max_starts_rounded),
      yaxp = c(0, max_starts_rounded/1000, 10),  # Adjusting the number of ticks on the y-axis
      col = "blue")  # Set the line color to blue
@@ -205,23 +254,6 @@ axis(side = 2, at = axTicks(2), labels = format(axTicks(2), big.mark = ",", scie
 
 ```
 
-```{r}
-#| label: fig-hpivs-plot
-#| fig-cap: Number of immigrants in Canada from 2000 to 2023
-#| echo: false
-#| warning: false
-#| message: false
-# Scatterplot of HPI against each economic indicator
-library(ggplot2)
-
-ggplot(data = merged_data, aes(x = Interest_Rate, y = Inflation.Rate....)) +
-  geom_point() + 
-  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Adding a linear trend line
-  labs(title = "Scatterplot of HPI vs Interest Rate",
-       x = "Interest Rate",
-       y = "HPI")
-
-```
 
 # Model{#sec-data2}
 
@@ -232,16 +264,22 @@ ggplot(data = merged_data, aes(x = Interest_Rate, y = Inflation.Rate....)) +
 
 ### Model set-up
 
-The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the intial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a multiple linear regression model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
+The goal of our modeling strategy is to analyze the relationship between the economic predictors and the housing price index (HPI), and explore how the economic variables contribute to the housing market. After exploring some of the initial data we observed a general trend between different variables, that indicated some level of relationship between them. To see the actual relationships, we implement a bayesian generalized linear model to take a close look at what variables seem to have an effect on the outcome variable, denoted by the house price index.
 
-### Multiple Linear Regression
-We chose to explore a variety of economic and count variables like immigration and housing starts, to see how these impact the housing prices we use multiple linear regression model. 
+###  Bayesian linear regression
+We chose to explore a variety of economic and count variables like immigration and housing starts, to see how these impact the housing prices we use a Bayesian GLM.  
 
  The basic form of the regression equation is:
  
 The linear regression equation for predicting the House Price Index is given by:
 
-\[ \text{House\_Price\_Index} = \beta_0 + \beta_1 \times \text{Inflation\_Rate} + \beta_2 \times \text{Interest\_Rate} + \beta_3 \times \text{Unemployment\_Rate} + \beta_4 \times \text{Immigration\_numbers} + \beta_5 \times \text{Housing\_Starts} + \epsilon \]
+$$
+\begin{aligned}
+\text{House\_Price\_Index} = & \beta_0 + \beta_1 \times \text{Inflation\_Rate} \\
+& + \beta_2 \times \text{Interest\_Rate} + \beta_3 \times \text{Unemployment\_Rate} \\
+& + \beta_4 \times \text{Immigration\_numbers} + \beta_5 \times \text{Housing\_Starts} + \epsilon
+\end{aligned}
+$$
 
 
 Where:
@@ -264,24 +302,27 @@ We expect a negative linear relationship between interest rates and housing pric
 
 ### Model Summary
 
-Our multiple linear regression model is summarized in [@tbl-model-sum]. Our multiple linear regression model reveals the strength and association of each indicator to the outcome variable, while holding other variables constant. The estimated coefficients in the model indicate the magnitude and direction of each variable's association. Indicators that had a positive relationship include the inflation_rate where each unit of increase in its value correlated to a 5.398 unit (estimate coefficient) increase in house_price_index. 
+Our multiple linear regression model is summarized in [@tbl-model]. Our multiple linear regression model reveals the strength and association of each indicator to the outcome variable, while holding other variables constant. The estimated coefficients in the model indicate the magnitude and direction of each variable's association. Indicators that had a positive relationship include the inflation_rate where each unit of increase in its value correlated to a 3.046 unit (estimate coefficient) increase in house_price_index. 
 
-The variables interest rate and unemployment_rate had a negative association to the house_price_index, as expected.For each unit increase of the interest rate (percent) the house price index saw a 12.45 unit decrease. The unemployment rate had estimate coefficient -2.812 indicating that as the unemployment rate changed by a unit the house price index saw a 2.812 unit decrease. However, here the relationship is not statistically significant as p > 0.05. 
+The variables interest rate and unemployment_rate had a negative association to the house_price_index, as expected.For each unit increase of the interest rate (percent) the house price index saw a 11.579 unit decrease. The unemployment rate had estimate coefficient -2.320 indicating that as the unemployment rate changed by a unit the house price index saw a 2.320 unit decrease. However, here the relationship is not statistically significant. 
 
 The housing_starts suggests a small negative effect on the house price index, but is not statistically significant. Similarly, the immigration_numbers saw a small positive effect on the house price index, but it is not statistically significant. Considering the nature of these variables, they are count values, hence a change in one unit (one housing start increase or one immigrant number increase) is not expressed significantly by this model.
 
-The model demonstrates an overall good fit with an R-squared value of 0.8522, indicating that approximately 85.229% of the variance in house price index is explained by the included predictors. The adjusted R-squared, which accounts for the number of predictors in the model, is slightly lower at 0.8088, suggesting the model is fairly robust. The residual standard error is 8.364, suggesting the amount of variability of observed responses around the fitted regression line (plot).
+The model demonstrates an overall good fit with an R-squared value of 0.842, indicating that approximately 84.2% of the variance in house price index is explained by the included predictors. The adjusted R-squared, which accounts for the number of predictors in the model, is slightly lower at 0.745, suggesting the model is fairly robust. The log likelihood has a value of -74.00 and indicates that the model provides a relatively good fit, as this refers to how well the model explains the observed data.
 
 
 # Discussion{#sec-data4}
 
 ## Interest Rates and HPI
-The model suggests interest rate as a significant predictor of HPI
+The model suggests interest rate as a significant predictor of HPI, or one that has the most fluctuation in a one unit change to our response variable of house price index. This trend was expected and is justified considering economic tendencies. The interest rates in our study recently saw a consistent hike over the last few years. This interest rate is the measure of the mortgage lending rate, a variable directly correlated to housing affordability and prices. As these have gone up, this negative relationship towards the house price index is justified. In terms of the housing market, interest rates show to be beneficial for generally decreasing house price index, and likely other market predictors not evaluated in this study. 
+
 
 ## Weaknesses and Biases 
 The data sets used for the analysis were combined and explored, these data sets may have added certain biases to our overall findings. There are a number of data sets that had missing values, and most of the data had to be modified to be compatible for use against the other indicators, we also note the  differences in their units reported. The modelling process is prone to adding bias to our findings due to model pre-assumptions, and whether the model may have overlooked trends due to its limitations. The regression model suggested immigration numbers and housing starts as not significant indicators of the house price index. However, from a economic perspective these variables should have affected the price index as they represent supply and demand variables. 
 
 Since our model could not grasp the nature of its data and showed a very minute relationship. To show some key insights, transforming these variables to a concise unit of change could help highlight their importance, or additionally using already aggregated data could help the regression model uncover associations more meaningfully. 
+
+The 
 
 
 ## Future Research

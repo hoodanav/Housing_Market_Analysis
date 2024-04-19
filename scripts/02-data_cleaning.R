@@ -11,7 +11,7 @@ library(tidyverse)
 library(dplyr)
 install.packages("readxl")  # Install the readxl package if not already installed
 library(readxl)  # Load the readxl package
-
+library(arrow)
 #### Clean data ####
 inflation_data <- read_csv("data/raw_data/inflation-rate-cpi.csv", skip = 16)
 unemployment_data <- read_csv("data/raw_data/canada-unemployment-rate.csv", skip = 16)
@@ -143,7 +143,7 @@ immigration$Year <- sub(".* - ", "", immigration$Year)
 print(immigration)
 
 # Create a new row for 2000 with NA immigration value
-new_row <- data.frame(Year = "2000", `Number of immigrants in Canada from 2000 to 2023` = 0)
+new_row <- data.frame(Year = "2000", `Number of immigrants in Canada from 2000 to 2023` = 252527)
 
 # Ensure column names match
 colnames(new_row) <- colnames(immigration)
@@ -303,7 +303,7 @@ print(duplicated_rows)
 
 # Save the merged data to a CSV file
 write.csv(merged_data, "data/analysis_data/merged_data.csv", row.names = FALSE)
-
+write_parquet(merged_data, "data/analysis_data/merged.parquet")
 
 # Print the merged data
 print(merged_data)
