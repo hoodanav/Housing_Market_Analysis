@@ -7,7 +7,7 @@ author:
 thanks: "Code and data are available at: https://github.com/hoodanav/Housing_Market_Analysis/tree/main"
 date: today
 date-format: long
-abstract: "This paper examines Ontario's housing market over 20 years, focusing on economic variables, housing starts, and immigration's impact on house prices. We evaluate the current housing development initiatives in addressing the housing crisis, along with immigration targets as supply and demand variables. The market's current state indicates an already constricted inventory that is largely influenced by interest rate hikes over the last few years."
+abstract: "This paper examines Ontario's housing market over 20 years, focusing on economic variables, housing starts, and immigration's impact on house prices. We evaluate the current housing development initiatives in addressing the housing crisis, along with immigration targets as supply and demand variables.The paper finds an already constricted market that is largely influenced by interest rate hikes during a housing crisis."
 header-includes:
   - \usepackage{amsmath}
   - \usepackage{amssymb}
